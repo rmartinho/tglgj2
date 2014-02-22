@@ -170,7 +170,7 @@ namespace NotShit.Dungen
         {
             foreach (Point position in Positions())
             {
-                grid.Put(this[position].ToChar(), position.X, position.Y);
+                grid.Put(this[position].ToChar(), position.X, position.Y, new Color(255, 255, 255));
             }
         }
     }
