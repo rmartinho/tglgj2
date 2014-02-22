@@ -29,9 +29,9 @@ namespace NotShit {
             Allegro.SetTargetBackbuffer(_handle);
         }
 
-        public void Clear(byte r, byte g, byte b) {
+        public void Clear(Color color) {
             SetAsTarget();
-            Allegro.ClearToColor(Allegro.MapRGB(r, g, b));
+            Allegro.ClearToColor(color.AllegroColor);
         }
     }
 }
