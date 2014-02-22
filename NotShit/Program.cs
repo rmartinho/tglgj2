@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NotShit.Dungen;
+using NotShit.Thingen;
 
 namespace NotShit {
     class Program {
@@ -29,10 +30,12 @@ namespace NotShit {
             Console.WriteLine("tile height = {0}", grid.TileHeight);
 
             var level = new Level(grid.GridWidth, grid.GridHeight, 20, 5, 20);
-
             // place mobs
             var fungen = new Fungen(level, grid);
             var player = fungen.PopulateLevel();
+            player.GiveThing(new Thing { Kind = ThingKind.Special });
+            player.GiveThing(Thing.Random());
+            player.GiveThing(Thing.Random());
 
             while (true) {
                 while (!queue.Empty) {
