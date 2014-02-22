@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NotShit.Dungen;
 
 namespace NotShit {
     class Program {
@@ -28,6 +29,7 @@ namespace NotShit {
             Console.WriteLine("tile height = {0}", grid.TileHeight);
 
             var player = new Player(grid);
+            var level = new Level(grid.GridWidth, grid.GridHeight, 20, 5, 20);
 
             while (true) {
                 while (!queue.Empty) {
@@ -84,6 +86,9 @@ namespace NotShit {
                 grid.Put('x', grid.GridWidth - 1, 0);
                 grid.Put('x', 0, grid.GridHeight - 1);
                 grid.Put('x', grid.GridWidth - 1, grid.GridHeight - 1);
+
+                level.Draw(grid);
+
                 grid.Put('@', player.X, player.Y, 128, 128, 128);
 
                 display.Clear(0, 0, 0);

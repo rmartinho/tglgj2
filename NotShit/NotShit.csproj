@@ -45,6 +45,7 @@
     <Compile Include="Dungen\Level.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Dungen\Tile.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="GenGod.cs" />
     <Compile Include="Allegro.cs" />
