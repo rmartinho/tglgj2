@@ -78,16 +78,17 @@ namespace NotShit.Dungen
 
         public Point GetWalkablePoint()
         {
-            return _rooms[0].TopLeft + _rooms[0].Size/2;
+            var room = _rooms[GenGod.GenOne(0, _rooms.Count)];
+            return GenGod.Point(room.TopLeft.X, room.TopLeft.Y, room.BottomRight.X, room.BottomRight.Y);
         }
 
         public Level(int width, int height, int nRooms, int minSize, int maxSize)
         {
             Width = width;
             Height = height;
-            _tiles = new List<Tile>(Infinite(() => new Tile {Kind = TileKind.Wall}).Take(width*height));
+            _tiles = new List<Tile>(Generate(() => new Tile {Kind = TileKind.Wall}).Take(width*height));
 
-            _rooms = Infinite(() => GenGod.Point(0, 0, Width, Height))
+            _rooms = Generate(() => GenGod.Point(0, 0, Width, Height))
                 .Where(p => this[p].Kind == TileKind.Wall)
                 .Where(p =>
                 {
@@ -195,7 +196,7 @@ namespace NotShit.Dungen
             }
         }
 
-        private static IEnumerable<T> Infinite<T>(Func<T> gen)
+        private static IEnumerable<T> Generate<T>(Func<T> gen)
         {
             while (true)
                 yield return gen();
