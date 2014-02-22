@@ -49,36 +49,33 @@ namespace NotShit {
             LastAttack = other;
         }
 
-        public void Move(Direction direction) {
-            switch (direction) {
-                case Direction.Down:
-                    Move(0, +1);
-                    break;
-                case Direction.DownLeft:
-                    Move(-1, +1);
-                    break;
-                case Direction.DownRight:
-                    Move(+1, +1);
-                    break;
-                case Direction.Left:
-                    Move(-1, 0);
-                    break;
-                case Direction.Right:
-                    Move(+1, 0);
-                    break;
-                case Direction.Up:
-                    Move(0, -1);
-                    break;
-                case Direction.UpLeft:
-                    Move(-1, -1);
-                    break;
-                case Direction.UpRight:
-                    Move(+1, -1);
-                    break;
-            }
+        public enum MoveResult {
+            Attacked, Blocked, Moved
         }
 
-        private void Move(int dx, int dy) {
+        public MoveResult Move(Direction direction) {
+            switch (direction) {
+                case Direction.Down:
+                    return Move(0, +1);
+                case Direction.DownLeft:
+                    return Move(-1, +1);
+                case Direction.DownRight:
+                    return Move(+1, +1);
+                case Direction.Left:
+                    return Move(-1, 0);
+                case Direction.Right:
+                    return Move(+1, 0);
+                case Direction.Up:
+                    return Move(0, -1);
+                case Direction.UpLeft:
+                    return Move(-1, -1);
+                case Direction.UpRight:
+                    return Move(+1, -1);
+            }
+            return MoveResult.Blocked;
+        }
+
+        private MoveResult Move(int dx, int dy) {
             var newX = dx + X;
             var newY = dy + Y;
 
@@ -98,12 +95,12 @@ namespace NotShit {
             var newTile = _level[new Point(newX, newY)];
 
             if (newTile.Kind == TileKind.Wall) {
-                return;
+                return MoveResult.Blocked;
             }
 
             if (newTile.Mob != null) {
                 AttackOther(newTile.Mob);
-                return;
+                return MoveResult.Attacked;
             }
 
             oldTile.Mob = null;
@@ -111,16 +108,36 @@ namespace NotShit {
             
             X = newX;
             Y = newY;
+            return MoveResult.Moved;
         }
 
         public void Place(int newX, int newY) {
             X = newX;
             Y = newY;
-            _level[new Point(X, Y)].Mob = this;
+            var tile = _level[new Point(X, Y)];
+            tile.Mob = this;
         }
 
         public virtual void Draw() {
             _grid.Put(Tile, X, Y, Color);
+        }
+
+        public void MoveRandomly() {
+            var directions = new[] {
+                Direction.Up,
+                Direction.Down,
+                Direction.Left,
+                Direction.Right,
+                Direction.UpRight,
+                Direction.UpLeft,
+                Direction.DownLeft,
+                Direction.DownRight
+            };
+
+            Direction direction;
+            do {
+                direction = GenGod.SelectOne(directions);
+            } while (Move(direction) == MoveResult.Blocked);
         }
     }
 }

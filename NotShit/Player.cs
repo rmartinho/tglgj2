@@ -53,5 +53,13 @@ namespace NotShit {
             AddMessage("A mysterious force smites you!");
             Health -= damage;
         }
+
+        public override void AttackOther(Mob other) {
+            base.AttackOther(other);
+            if (other.Health < 0) {
+                _level[new Point(other.X, other.Y)].Mob = null;
+                AddMessage(string.Format("You kill the {0}!", other.Name));
+            }
+        }
     }
 }

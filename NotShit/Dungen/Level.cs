@@ -142,6 +142,15 @@ namespace NotShit.Dungen
             get { return _rooms; }
         }
 
+        public IEnumerable<Mob> AliveMobs() {
+            foreach (var position in Positions()) {
+                var mob = this[position].Mob;
+                if (mob != null && mob.Alive && !(mob is Player)) {
+                    yield return mob;
+                }
+            }
+        }
+
         public Tile this[Point index]
         {
             get { return _tiles[index.X + index.Y*Width]; }

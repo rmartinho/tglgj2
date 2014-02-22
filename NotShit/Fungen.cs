@@ -47,9 +47,10 @@ namespace NotShit {
             Point position;
             do {
                 position = _level.GetWalkablePoint();
-                var mob = GenerateOne();
-                mob.Place(position.X, position.Y);
             } while (_level[position].Mob != null);
+
+            var mob = GenerateOne();
+            mob.Place(position.X, position.Y);
         }
 
         public Player PopulateLevel() {

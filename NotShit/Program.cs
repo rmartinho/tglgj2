@@ -104,6 +104,11 @@ namespace NotShit {
 
                 // map processing
                 grid.Clear();
+                
+                // 'ai'
+                foreach (var mob in level.AliveMobs()) {
+                    mob.MoveRandomly();
+                }
                 level.Draw(grid);
 
                 display.Clear(Color.Black);
