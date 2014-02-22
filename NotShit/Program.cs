@@ -49,9 +49,10 @@ namespace NotShit {
 
                         // mode-dependent
                         if (player.HasMessages) {
-                            // only process enters
-                            if (keyEvent.KeyCode == 67 || keyEvent.KeyCode == 91) {
-                                player.DismissMessage();
+                            // any key dismisses the current message
+                            player.DismissMessage();
+                            if (!player.Alive && !player.HasMessages) {
+                                return;
                             }
                         } else {
                             switch (keyEvent.KeyCode) {

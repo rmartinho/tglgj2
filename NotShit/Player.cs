@@ -11,6 +11,7 @@ namespace NotShit {
         public int Y { get; private set; }
         public int Health { get; set; }
         public int MaxHealth { get; set; }
+        public bool Alive { get { return Health > 0; } }
 
         public bool HasMessages { get { return _messages.Count > 0; } }
         public string CurrentMessage { get { return _messages.Peek(); } }
@@ -106,6 +107,9 @@ namespace NotShit {
         public void Damage(int damage) {
             AddMessage("A mysterious force smites you!");
             Health -= damage;
+            if (Health < 0) {
+                AddMessage("You're dead! Congratulations!");
+            }
         }
     }
 }
