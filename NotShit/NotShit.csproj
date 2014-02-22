@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Allegro.cs" />
     <Compile Include="Display.cs" />
+    <Compile Include="EventQueue.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
