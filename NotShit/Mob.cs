@@ -116,6 +116,7 @@ namespace NotShit {
         public void Place(int newX, int newY) {
             X = newX;
             Y = newY;
+            _level[new Point(X, Y)].Mob = this;
         }
 
         public virtual void Draw() {

@@ -222,6 +222,7 @@ namespace NotShit.Dungen
             {
                 grid.Put(this[position].ToChar(), position.X, position.Y, new Color(255, 255, 255));
                 if (this[position].Mob != null) {
+                    Console.WriteLine("Mob = {0} at x = {1} y = {2}", this[position].Mob.Name, position.X, position.Y);
                     this[position].Mob.Draw();
                 }
             }
