@@ -61,36 +61,31 @@ namespace NotShit.Dungen
             Width = width;
             Height = height;
             _tiles = new List<Tile>(Infinite(() => new Tile {Kind = TileKind.Wall}).Take(width*height));
-            _rooms = new List<Room>();
 
-            Func<Room, bool> shouldAdd = r => !_rooms.Any(existingRoom => existingRoom.IntersectsWithWalls(r));
-            Infinite(() => new Room
-            {
-                TopLeft = GenGod.Point(0, 0, width, height),
-                Size = GenGod.Point(minSize, minSize, maxSize, maxSize)
-            }).Select(r =>
-            {
-                int adjustedX = r.BottomRight.X >= Width ? Width-1 : r.BottomRight.X;
-                int adjustedY = r.BottomRight.Y >= Height ? Height-1 : r.BottomRight.Y;
-                r.BottomRight = new Point {X = adjustedX, Y = adjustedY};
-                return r;
-            }).Take(nRooms * 10000)
-            .Where(r =>
-            {
-                if (shouldAdd(r))
+            _rooms = Infinite(() => GenGod.Point(0, 0, Width, Height))
+                .Where(p => this[p].Kind == TileKind.Wall)
+                .Where(p =>
                 {
-                    _rooms.Add(r);
-                    return true;
-                }
-                return false;
-            }).Take(nRooms)
-            .ToList(); // Consume and discard; output is side-effected into _rooms
-
-
-            foreach (Room room in _rooms)
-            {
-                CarveRoom(room);
-            }
+                    var growth = PossibleGrowth(p);
+                    return growth.X > 0 && growth.Y > 0;
+                })
+                .Select(p =>
+                {
+                    Point growth = PossibleGrowth(p);
+                    var half = new Point {X = growth.X/2, Y = growth.Y/2};
+                    var room = new Room
+                    {
+                        TopLeft = p + half,
+                        Size = growth
+                    };
+                    var clampedX = room.BottomRight.X >= Width ? Width - 1 : room.BottomRight.X;
+                    var clampedY = room.BottomRight.Y >= Height ? Height - 1 : room.BottomRight.Y;
+                    room.BottomRight = new Point {X = clampedX, Y = clampedY};
+                    CarveRoom(room);
+                    return room;
+                })
+                .Take(nRooms)
+                .ToList();
         }
 
         public int Width { get; private set; }
@@ -100,6 +95,47 @@ namespace NotShit.Dungen
         {
             get { return _tiles[index.X + index.Y*Width]; }
             set { _tiles[index.X + index.Y*Width] = value; }
+        }
+
+        private IEnumerable<Point> WestOf(Point at)
+        {
+            for (int x = at.X-1; x > 0; x--)
+            {
+                yield return new Point {X = x, Y = at.Y};
+            }
+        }
+
+        private IEnumerable<Point> EastOf(Point at)
+        {
+            for (int x = at.X+1; x < Width - 1; x++)
+            {
+                yield return new Point {X = x, Y = at.Y};
+            }
+        }
+
+        private IEnumerable<Point> NorthOf(Point at)
+        {
+            for (int y = at.Y-1; y > 0; y--)
+            {
+                yield return new Point {X = at.X, Y = y};
+            }
+        }
+
+        private IEnumerable<Point> SouthOf(Point at)
+        {
+            for (int y = at.Y+1; y < Height - 1; y++)
+            {
+                yield return new Point {X = at.X, Y = y};
+            }
+        }
+
+        private Point PossibleGrowth(Point at)
+        {
+            int maxWest = WestOf(at).TakeWhile(p => this[p].Kind == TileKind.Wall).Count() - 1;
+            int maxEast = EastOf(at).TakeWhile(p => this[p].Kind == TileKind.Wall).Count() - 1;
+            int maxNorth = NorthOf(at).TakeWhile(p => this[p].Kind == TileKind.Wall).Count() -1;
+            int maxSouth = SouthOf(at).TakeWhile(p => this[p].Kind == TileKind.Wall).Count() - 1;
+            return new Point {X = Math.Min(maxWest, maxEast), Y = Math.Min(maxNorth, maxSouth)};
         }
 
         private void CarveRoom(Room room)
