@@ -47,11 +47,24 @@
     </Compile>
     <Compile Include="Point.cs" />
     <Compile Include="GenGod.cs" />
+    <Compile Include="Allegro.cs" />
+    <Compile Include="Display.cs" />
+    <Compile Include="EventQueue.cs" />
+    <Compile Include="Font.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="fonts\DejaVuSansMono.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="lib\allegro-5.0.10-monolith-mt.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
