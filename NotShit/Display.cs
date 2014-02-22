@@ -1,8 +1,10 @@
 ﻿using System;
 
 namespace NotShit {
-    class Display : IDisposable {
+    public class Display : IDisposable {
         private readonly IntPtr _handle;
+        public int Width { get; private set; }
+        public int Height { get; private set; }
 
         public Display(string title, int width, int height) {
             _handle = Allegro.CreateDisplay(width, height);
@@ -10,6 +12,9 @@ namespace NotShit {
                 throw new Exception("No display for you!");
             }
             Allegro.SetWindowTitle(_handle, title);
+
+            Width = width;
+            Height = height;
         }
 
         public void Dispose() {

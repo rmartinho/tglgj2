@@ -43,9 +43,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Allegro.cs" />
+    <Compile Include="Direction.cs" />
     <Compile Include="Display.cs" />
     <Compile Include="EventQueue.cs" />
     <Compile Include="Font.cs" />
+    <Compile Include="GridDisplay.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
