@@ -28,8 +28,11 @@ namespace NotShit {
             Console.WriteLine("tile width  = {0}", grid.TileWidth);
             Console.WriteLine("tile height = {0}", grid.TileHeight);
 
-            var player = new Player(grid);
             var level = new Level(grid.GridWidth, grid.GridHeight, 20, 5, 20);
+            var player = new Player(grid);
+            var playerPos = level.GetWalkablePoint();
+            player.X = playerPos.X;
+            player.Y = playerPos.Y;
 
             while (true) {
                 while (!queue.Empty) {

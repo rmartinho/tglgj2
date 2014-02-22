@@ -56,6 +56,11 @@ namespace NotShit.Dungen
         private readonly List<Room> _rooms;
         private readonly List<Tile> _tiles;
 
+        public Point GetWalkablePoint()
+        {
+            return _rooms[0].TopLeft + _rooms[0].Size/2;
+        }
+
         public Level(int width, int height, int nRooms, int minSize, int maxSize)
         {
             Width = width;

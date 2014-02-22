@@ -8,8 +8,8 @@ namespace NotShit {
         private readonly Queue<string> _messages;
         private int _health;
 
-        public int X { get; private set; }
-        public int Y { get; private set; }
+        public int X { get; set; }
+        public int Y { get; set; }
 
         public int Health {
             get { return _health; }
