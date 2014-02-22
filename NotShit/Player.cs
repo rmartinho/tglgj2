@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using NotShit.Thingen;
 
 namespace NotShit {
     public class Player : Mob {
         private readonly Queue<string> _messages;
         private int _health;
+
+        private readonly List<Thing> things = new List<Thing>();
 
         public override int Health {
             get { return _health; }
@@ -13,6 +16,19 @@ namespace NotShit {
                     AddMessage("You're dead! Congratulations!");
                 }
                 _health = value;
+            }
+        }
+
+        public void GiveThing(Thing thing)
+        {
+            AddMessage("You obtained a " + thing);
+            if (thing.Kind == ThingKind.Weapon)
+            {
+                Attack += thing.Bonus;
+            }
+            if (thing.Kind == ThingKind.Armor)
+            {
+                Defense += thing.Bonus;
             }
         }
 
