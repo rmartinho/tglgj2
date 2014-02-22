@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NotShit.Dungen;
+using NotShit.Thingen;
 
 namespace NotShit
 {
