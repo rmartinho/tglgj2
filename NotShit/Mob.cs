@@ -1,0 +1,4 @@
+﻿namespace NotShit {
+    class Mob {
+    }
+}

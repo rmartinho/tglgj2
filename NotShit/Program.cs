@@ -85,7 +85,7 @@ namespace NotShit {
                                     player.Move(Direction.UpRight);
                                     break;
                                 case 4: // 'd' deals 3 damage
-                                    player.Damage(3);
+                                    player.DebugDamage(3);
                                     break;
                             }
                         }
@@ -96,19 +96,15 @@ namespace NotShit {
 
                 // map processing
                 grid.Clear();
-                grid.Put('x', 0, 0);
-                grid.Put('x', grid.GridWidth - 1, 0);
-                grid.Put('x', 0, grid.GridHeight - 1);
-                grid.Put('x', grid.GridWidth - 1, grid.GridHeight - 1);
                 player.Draw();
 
-                display.Clear(0, 0, 0);
+                display.Clear(Color.Black);
                 grid.Draw();
                 // status line
                 var lastY = grid.GridHeight * grid.TileHeight;
                 if (player.HasMessages) {
                     font.Draw(player.CurrentMessage, 0, lastY);
-                    font.Draw("[CONT]", (grid.GridWidth * grid.TileWidth) - (grid.TileWidth * "[CONT]".Length), lastY, r: 0, g: 200, b: 0);
+                    font.Draw("[CONT]", (grid.GridWidth * grid.TileWidth) - (grid.TileWidth * "[CONT]".Length), lastY, Color.Green);
                 } else {
                     font.Draw(string.Format("HP: {0}/{1}", player.Health, player.MaxHealth), 0, lastY);
                 }

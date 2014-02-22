@@ -6,12 +6,25 @@ namespace NotShit {
     class Player {
         private readonly GridDisplay _grid;
         private readonly Queue<string> _messages;
+        private int _health;
 
         public int X { get; private set; }
         public int Y { get; private set; }
-        public int Health { get; set; }
+
+        public int Health {
+            get { return _health; }
+            set {
+                if (value < 0) {
+                    AddMessage("You're dead! Congratulations!");
+                }
+                _health = value;
+            }
+        }
+
         public int MaxHealth { get; set; }
         public bool Alive { get { return Health > 0; } }
+        public int Attack { get; set; }
+        public int Defense { get; set; }
 
         public bool HasMessages { get { return _messages.Count > 0; } }
         public string CurrentMessage { get { return _messages.Peek(); } }
@@ -88,28 +101,22 @@ namespace NotShit {
 
         public void Draw() {
             var health = (double)Health / MaxHealth;
-            byte r = 0,
-                 g = 0,
-                 b = 0;
+            Color color;
             
             if (health >= 0.9) {
-                g = 200;
+                color = Color.Green;
             } else if (health >= 0.5) {
-                r = 200;
-                g = 200;
+                color = Color.Yellow;
             } else {
-                r = 200;
+                color = Color.Red;
             }
 
-            _grid.Put('@', X, Y, r, g, b);
+            _grid.Put('@', X, Y, color);
         }
 
-        public void Damage(int damage) {
+        public void DebugDamage(int damage) {
             AddMessage("A mysterious force smites you!");
             Health -= damage;
-            if (Health < 0) {
-                AddMessage("You're dead! Congratulations!");
-            }
         }
     }
 }

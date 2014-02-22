@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 namespace NotShit {
     public class GridDisplay {
         private class Tile {
-            public byte Red { get; set; }
-            public byte Green { get; set; }
-            public byte Blue { get; set; }
             public char Character { get; set; }
+            public Color Color { get; set; }
 
             public Tile() {
-                Red = Green = Blue = 255;
+                Color = Color.White;
                 Character = ' ';
             }
         }
@@ -54,11 +47,9 @@ namespace NotShit {
             }
         }
 
-        public void Put(char ch, int x, int y, byte r = 255, byte g = 255, byte b = 255) {
+        public void Put(char ch, int x, int y, Color color) {
             _grid[x, y] = new Tile {
-                Red = r,
-                Green = g,
-                Blue = b,
+                Color = color,
                 Character = ch
             };
         }
@@ -68,7 +59,7 @@ namespace NotShit {
                 for (var y = 0; y < GridHeight; ++y) {
                     var tile = _grid[x, y];
                     var str = tile.Character.ToString(CultureInfo.InvariantCulture);
-                    _font.Draw(str, TileWidth * x, TileHeight * y, tile.Red, tile.Green, tile.Blue);
+                    _font.Draw(str, TileWidth * x, TileHeight * y, tile.Color);
                 }
             }
         }

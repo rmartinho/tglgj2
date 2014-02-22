@@ -42,9 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Color.cs" />
+    <Compile Include="Dice.cs" />
     <Compile Include="Dungen\Level.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Fungen.cs" />
+    <Compile Include="Mob.cs" />
+    <Compile Include="MobTemplate.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="GenGod.cs" />
     <Compile Include="Allegro.cs" />

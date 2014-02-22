@@ -24,9 +24,8 @@ namespace NotShit {
             Allegro.GetTextDimensions(_handle, text, out x, out y, out width, out height);
         }
 
-        public void Draw(string text, float x, float y, byte r = 255, byte g = 255, byte b = 255) {
-            var color = Allegro.MapRGB(r, g, b);
-            Allegro.DrawText(_handle, color, x, y, 0, text);
+        public void Draw(string text, float x, float y, Color? color = null) {
+            Allegro.DrawText(_handle, (color ?? Color.White).AllegroColor, x, y, 0, text);
         }
     }
 }
