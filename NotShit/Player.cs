@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 using NotShit.Thingen;
 
+using NotShit.Dungen;
+
 namespace NotShit {
     public class Player : Mob {
         private readonly Queue<string> _messages;
-        private int _health;
 
         private readonly List<Thing> things = new List<Thing>();
 
         public override int Health {
-            get { return _health; }
+            get { return base.Health; }
             set {
                 if (value < 0) {
                     AddMessage("You're dead! Congratulations!");
                 }
-                _health = value;
+                base.Health = value;
             }
         }
 
@@ -35,8 +36,7 @@ namespace NotShit {
         public bool HasMessages { get { return _messages.Count > 0; } }
         public string CurrentMessage { get { return _messages.Peek(); } }
 
-        public Player(GridDisplay grid) : base(grid, "Player", 25, 5, 4) {
-            Place(grid.GridWidth / 2, grid.GridHeight / 2);
+        public Player(Level level, GridDisplay grid) : base(level, grid, "Player", 25, 5, 4) {
             _messages = new Queue<string>();
         }
 
