@@ -2,7 +2,7 @@
 
 namespace NotShit {
     public class EventQueue : IDisposable {
-        private IntPtr _handle;
+        private readonly IntPtr _handle;
 
         public bool Empty { get { return Allegro.IsEventQueueEmpty(_handle); } }
 
