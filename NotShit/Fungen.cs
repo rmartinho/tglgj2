@@ -1,13 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 
 namespace NotShit {
     // a mob generator
     public class Fungen {
+        private readonly GridDisplay _grid;
         private readonly IList<MobTemplate> _templates;
 
-        public Fungen() {
+        public Fungen(GridDisplay grid) {
+            _grid = grid;
             _templates = new List<MobTemplate>();
             
             Add('r', Color.LightGray, "rat", "1d3+1", "1d2+1", "1d4+2");
@@ -23,6 +23,18 @@ namespace NotShit {
                 Tile = tile,
                 Color = color
             });
+        }
+
+        public Mob Generate() {
+            // completely unbiased. YOU WILL GET THE WORST MOBS ANYWAY
+            var idx = GenGod.GenOne(0, _templates.Count);
+            var template = _templates[idx];
+
+            var health = new Dice(template.HealthDice);
+            var attack = new Dice(template.AttackDice);
+            var defense = new Dice(template.DefenseDice);
+
+            return new Mob(_grid, template, health.Roll(), attack.Roll(), defense.Roll());
         }
     }
 }

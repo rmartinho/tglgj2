@@ -28,6 +28,8 @@ namespace NotShit {
             Console.WriteLine("tile height = {0}", grid.TileHeight);
 
             var player = new Player(grid);
+            var fungen = new Fungen(grid);
+            var testMob = fungen.Generate();
 
             while (true) {
                 while (!queue.Empty) {
@@ -87,6 +89,9 @@ namespace NotShit {
                                 case 4: // 'd' deals 3 damage
                                     player.DebugDamage(3);
                                     break;
+                                case 1: // 'a' debug fight
+                                    player.AttackOther(testMob);
+                                    break;
                             }
                         }
 
@@ -106,7 +111,12 @@ namespace NotShit {
                     font.Draw(player.CurrentMessage, 0, lastY);
                     font.Draw("[CONT]", (grid.GridWidth * grid.TileWidth) - (grid.TileWidth * "[CONT]".Length), lastY, Color.Green);
                 } else {
-                    font.Draw(string.Format("HP: {0}/{1}", player.Health, player.MaxHealth), 0, lastY);
+                    var status = string.Format("HP: {0}/{1} | Attack: {2} | Defense: {3}", player.Health, player.MaxHealth, player.Attack, player.Defense);
+                    var mob = player.LastAttack;
+                    if (mob != null && mob.Alive) {
+                        status += string.Format(" <<>> {0} | HP: {1}/{2} | Attack: {3} | Defense: {4}", mob.Name, mob.Health, mob.MaxHealth, mob.Attack, mob.Defense);
+                    }
+                    font.Draw(status, 0, lastY);
                 }
                 display.Flip();
             }
