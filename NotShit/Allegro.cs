@@ -1,6 +1,8 @@
 ﻿using System;
+using System.CodeDom;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 
 namespace NotShit {
@@ -87,6 +89,30 @@ namespace NotShit {
 
         [DllImport(AllegroDll, EntryPoint = "al_get_mouse_event_source", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr GetMouseEventSource();
+
+        [DllImport(AllegroDll, EntryPoint = "al_load_font", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr LoadFont([MarshalAs(UnmanagedType.LPStr)] string filename, int size, int flags);
+
+        [DllImport(AllegroDll, EntryPoint = "al_destroy_font", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void DestroyFont(IntPtr handle);
+
+        [DllImport(AllegroDll, EntryPoint = "al_get_font_ascent", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetFontAscent(IntPtr handle);
+
+        [DllImport(AllegroDll, EntryPoint = "al_get_font_descent", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetFontDescent(IntPtr handle);
+
+        [DllImport(AllegroDll, EntryPoint = "al_get_font_line_height", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetFontLineHeight(IntPtr handle);
+
+        [DllImport(AllegroDll, EntryPoint = "al_get_text_dimensions", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetTextDimensions(IntPtr handle, [MarshalAs(UnmanagedType.LPStr)] string text, out int x, out int y, out int w, out int h);
+
+        [DllImport(AllegroDll, EntryPoint = "al_draw_text", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void DrawText(IntPtr handle, Color color, float x, float y, int flags, [MarshalAs(UnmanagedType.LPStr)] string text);
+
+        [DllImport(AllegroDll, EntryPoint = "al_get_errno", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetErrNo();
 
         [StructLayout(LayoutKind.Sequential)]
         public struct Color {
@@ -208,6 +234,7 @@ namespace NotShit {
         }
 
         public class KeyboardEvent : IEvent {
+            public EventType Type { get; set; }
             public IntPtr DisplayHandle { get; set; }
             public int KeyCode { get; set; }
             public int Character { get; set; }
@@ -228,6 +255,7 @@ namespace NotShit {
                 Character = union.uniChar;
                 Modifiers = union.modifiers;
                 Repeat = union.repeat != 0;
+                Type = union.type;
             }
         }
 
@@ -236,16 +264,16 @@ namespace NotShit {
                 throw new Exception("Allegro doesn't like you.");
             }
 
-            if (!InitTTF()) {
-                throw new Exception("TTF addon failed to init.");
+            if (!InitImage()) {
+                throw new Exception("Image addon failed to init.");
             }
 
             if (!InitFont()) {
                 throw new Exception("Font addon failed to init.");
             }
 
-            if (!InitImage()) {
-                throw new Exception("Image addon failed to init.");
+            if (!InitTTF()) {
+                throw new Exception("TTF addon failed to init.");
             }
 
             if (!InstallKeyboard()) {

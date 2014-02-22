@@ -8,6 +8,9 @@ namespace NotShit {
 
         public EventQueue() {
             _handle = Allegro.CreateEventQueue();
+            if (_handle == IntPtr.Zero) {
+                throw new Exception("No events. Ever");
+            }
             Allegro.RegisterEventSource(_handle, Allegro.GetKeyboardEventSource());
         }
 
