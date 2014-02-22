@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NotShit.Dungen;
 
 namespace NotShit {
     class Program {
@@ -29,6 +30,7 @@ namespace NotShit {
 
             var player = new Player(grid);
             var fungen = new Fungen(grid);
+            var level = new Level(grid.GridWidth, grid.GridHeight, 20, 5, 20);
             var testMob = fungen.Generate();
 
             while (true) {
@@ -101,6 +103,9 @@ namespace NotShit {
 
                 // map processing
                 grid.Clear();
+
+                level.Draw(grid);
+
                 player.Draw();
 
                 display.Clear(Color.Black);

@@ -10,16 +10,6 @@ namespace NotShit.Dungen
         Floor
     }
 
-    public class Tile
-    {
-        public TileKind Kind { get; set; }
-
-        public override string ToString()
-        {
-            return Kind.ToString();
-        }
-    }
-
     public class Room
     {
         public Point TopLeft { get; set; }
@@ -28,13 +18,19 @@ namespace NotShit.Dungen
         public Point BottomRight
         {
             get { return TopLeft + Size; }
-            set { Size = BottomRight - TopLeft; }
+            set { Size = value - TopLeft; }
         }
 
         public bool Intersects(Room other)
         {
             return (TopLeft.X > other.BottomRight.X || BottomRight.X < other.TopLeft.X)
                    && (TopLeft.Y > other.BottomRight.Y || BottomRight.Y < other.TopLeft.Y);
+        }
+
+        public bool IntersectsWithWalls(Room other)
+        {
+            return !((TopLeft.X > other.BottomRight.X + 1 || BottomRight.X + 1 < other.TopLeft.X)
+                     && (TopLeft.Y > other.BottomRight.Y + 1 || BottomRight.Y + 1 < other.TopLeft.Y));
         }
 
         public bool Contains(Point point)
@@ -60,33 +56,36 @@ namespace NotShit.Dungen
         private readonly List<Room> _rooms;
         private readonly List<Tile> _tiles;
 
-        public Level(int width, int height, int maxRooms, int minSize, int maxSize)
+        public Level(int width, int height, int nRooms, int minSize, int maxSize)
         {
             Width = width;
             Height = height;
             _tiles = new List<Tile>(Infinite(() => new Tile {Kind = TileKind.Wall}).Take(width*height));
-            var possibleRooms = new List<Room>(
-                Infinite(() =>
+
+            _rooms = Infinite(() => GenGod.Point(0, 0, Width, Height))
+                .Where(p => this[p].Kind == TileKind.Wall)
+                .Where(p =>
                 {
-                    return new Room
+                    var growth = PossibleGrowth(p);
+                    return growth.X > 0 && growth.Y > 0;
+                })
+                .Select(p =>
+                {
+                    Point growth = PossibleGrowth(p);
+                    var half = new Point {X = growth.X/2, Y = growth.Y/2};
+                    var room = new Room
                     {
-                        TopLeft = GenGod.Point(0, 0, width, height),
-                        Size = GenGod.Point(minSize, minSize, maxSize, maxSize)
+                        TopLeft = p + half,
+                        Size = growth
                     };
-                }).Take(maxRooms));
-
-            _rooms = new List<Room>();
-
-            Func<Room, bool> shouldAdd = r => !_rooms.Any(existingRoom => existingRoom.Intersects(r));
-            foreach (Room room in possibleRooms)
-            {
-                if (shouldAdd(room)) _rooms.Add(room);
-            }
-
-            foreach (Room room in _rooms)
-            {
-                CarveRoom(room);
-            }
+                    var clampedX = room.BottomRight.X >= Width ? Width - 1 : room.BottomRight.X;
+                    var clampedY = room.BottomRight.Y >= Height ? Height - 1 : room.BottomRight.Y;
+                    room.BottomRight = new Point {X = clampedX, Y = clampedY};
+                    CarveRoom(room);
+                    return room;
+                })
+                .Take(nRooms)
+                .ToList();
         }
 
         public int Width { get; private set; }
@@ -98,10 +97,51 @@ namespace NotShit.Dungen
             set { _tiles[index.X + index.Y*Width] = value; }
         }
 
+        private IEnumerable<Point> WestOf(Point at)
+        {
+            for (int x = at.X-1; x > 0; x--)
+            {
+                yield return new Point {X = x, Y = at.Y};
+            }
+        }
+
+        private IEnumerable<Point> EastOf(Point at)
+        {
+            for (int x = at.X+1; x < Width - 1; x++)
+            {
+                yield return new Point {X = x, Y = at.Y};
+            }
+        }
+
+        private IEnumerable<Point> NorthOf(Point at)
+        {
+            for (int y = at.Y-1; y > 0; y--)
+            {
+                yield return new Point {X = at.X, Y = y};
+            }
+        }
+
+        private IEnumerable<Point> SouthOf(Point at)
+        {
+            for (int y = at.Y+1; y < Height - 1; y++)
+            {
+                yield return new Point {X = at.X, Y = y};
+            }
+        }
+
+        private Point PossibleGrowth(Point at)
+        {
+            int maxWest = WestOf(at).TakeWhile(p => this[p].Kind == TileKind.Wall).Count() - 1;
+            int maxEast = EastOf(at).TakeWhile(p => this[p].Kind == TileKind.Wall).Count() - 1;
+            int maxNorth = NorthOf(at).TakeWhile(p => this[p].Kind == TileKind.Wall).Count() -1;
+            int maxSouth = SouthOf(at).TakeWhile(p => this[p].Kind == TileKind.Wall).Count() - 1;
+            return new Point {X = Math.Min(maxWest, maxEast), Y = Math.Min(maxNorth, maxSouth)};
+        }
+
         private void CarveRoom(Room room)
         {
             IEnumerable<Point> positions = from x in Enumerable.Range(room.TopLeft.X, room.Size.X)
-                                           from y in Enumerable.Range(room.TopLeft.Y, room.Size.Y)
+                from y in Enumerable.Range(room.TopLeft.Y, room.Size.Y)
                 select new Point {X = x, Y = y};
             foreach (Point position in positions)
             {
@@ -113,6 +153,25 @@ namespace NotShit.Dungen
         {
             while (true)
                 yield return gen();
+        }
+
+        public IEnumerable<Point> Positions()
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    yield return new Point {X = x, Y = y};
+                }
+            }
+        }
+
+        public void Draw(GridDisplay grid)
+        {
+            foreach (Point position in Positions())
+            {
+                grid.Put(this[position].ToChar(), position.X, position.Y, new Color(255, 255, 255));
+            }
         }
     }
 }

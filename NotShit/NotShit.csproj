@@ -47,6 +47,7 @@
     <Compile Include="Dungen\Level.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Dungen\Tile.cs" />
     <Compile Include="Fungen.cs" />
     <Compile Include="Mob.cs" />
     <Compile Include="MobTemplate.cs" />
