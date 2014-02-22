@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Security.Claims;
 
 namespace NotShit {
-    static class Allegro {
+    static internal class Allegro {
         private const string AllegroDll = "lib/allegro-5.0.10-monolith-mt.dll";
         
         /**
@@ -35,7 +34,39 @@ namespace NotShit {
 
         [DllImport(AllegroDll, EntryPoint = "al_destroy_display", CallingConvention = CallingConvention.Cdecl)]
         public static extern void DestroyDisplay(IntPtr handle);
+
+        [DllImport(AllegroDll, EntryPoint = "al_flip_display", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void FlipDisplay();
+
+        [DllImport(AllegroDll, EntryPoint = "al_set_window_title", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SetWindowTitle(IntPtr handle, [MarshalAs(UnmanagedType.LPStr)] string title);
+
+        [DllImport(AllegroDll, EntryPoint = "al_map_rgb", CallingConvention = CallingConvention.Cdecl)]
+        public static extern Color MapRGB(byte r, byte g, byte b);
+
+        [DllImport(AllegroDll, EntryPoint = "al_map_rgb_f", CallingConvention = CallingConvention.Cdecl)]
+        public static extern Color MapRGB(float r, float g, float b);
+
+        [DllImport(AllegroDll, EntryPoint = "al_map_rgba", CallingConvention = CallingConvention.Cdecl)]
+        public static extern Color MapRGB(byte r, byte g, byte b, byte a);
+
+        [DllImport(AllegroDll, EntryPoint = "al_map_rgba_f", CallingConvention = CallingConvention.Cdecl)]
+        public static extern Color MapRGB(float r, float g, float b, float a);
+
+        [DllImport(AllegroDll, EntryPoint = "al_clear_to_color", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void ClearToColor(Color color);
+
+        [DllImport(AllegroDll, EntryPoint = "al_set_target_bitmap", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SetTargetBitmap(IntPtr handle);
+
+        [DllImport(AllegroDll, EntryPoint = "al_set_target_backbuffer", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SetTargetBackbuffer(IntPtr handle);
         
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Color {
+            public float r, g, b, a;
+        }
+
         public static void Init() {
             if (!InstallSystem(AllegroVersionInt, IntPtr.Zero)) {
                 throw new Exception("Allegro doesn't like you.");
