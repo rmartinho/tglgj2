@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using NotShit.Dungen;
 
 namespace NotShit
 {
@@ -25,6 +26,11 @@ namespace NotShit
         public static int RollDie(int sides)
         {
             return generator.Next(0, sides) + 1;
+        }
+
+        public static Point Point(int minX, int minY, int maxX, int maxY)
+        {
+            return new Point {X = GenOne(minX, maxX), Y = GenOne(minY, maxY)};
         }
     }
 }
