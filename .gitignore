@@ -2,4 +2,5 @@
 *.swp
 bin/
 obj/
-
+*.user
+_ReSharper.*/
