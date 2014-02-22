@@ -1,21 +1,28 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace NotShit {
     class Player {
         private readonly GridDisplay _grid;
+        private readonly Queue<string> _messages;
+
         public int X { get; private set; }
         public int Y { get; private set; }
+        public int Health { get; set; }
+        public int MaxHealth { get; set; }
+
+        public bool HasMessages { get { return _messages.Count > 0; } }
+        public string CurrentMessage { get { return _messages.Peek(); } }
 
         public Player(GridDisplay grid) {
             _grid = grid;
             X = grid.GridWidth / 2;
             Y = grid.GridHeight / 2;
+
+            Health = MaxHealth = 25;
+
+            _messages = new Queue<string>();
         }
 
         public void Move(Direction direction) {
@@ -65,6 +72,40 @@ namespace NotShit {
 
             X = newX;
             Y = newY;
+        }
+
+        public void DismissMessage() {
+            _messages.Dequeue();
+        }
+
+        public void AddMessage(string message) {
+            if (message.Length >= _grid.GridWidth - " [CONT]".Length) {
+                throw new Exception("Message too long.");
+            }
+            _messages.Enqueue(message);
+        }
+
+        public void Draw() {
+            var health = (double)Health / MaxHealth;
+            byte r = 0,
+                 g = 0,
+                 b = 0;
+            
+            if (health >= 0.9) {
+                g = 200;
+            } else if (health >= 0.5) {
+                r = 200;
+                g = 200;
+            } else {
+                r = 200;
+            }
+
+            _grid.Put('@', X, Y, r, g, b);
+        }
+
+        public void Damage(int damage) {
+            AddMessage("A mysterious force smites you!");
+            Health -= damage;
         }
     }
 }
