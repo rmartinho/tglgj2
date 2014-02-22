@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
+using System.Security.Cryptography;
 
 namespace NotShit.Dungen
 {
@@ -21,6 +24,23 @@ namespace NotShit.Dungen
             set { Size = value - TopLeft; }
         }
 
+
+        public bool IsWestOf(Room other)
+        {
+            return TopLeft.X < other.TopLeft.X;
+        }
+        public bool IsEastOf(Room other)
+        {
+            return TopLeft.X > other.TopLeft.X;
+        }
+        public bool IsNorthOf(Room other)
+        {
+            return TopLeft.Y < other.TopLeft.Y;
+        }
+        public bool IsSouthOf(Room other)
+        {
+            return TopLeft.Y > other.TopLeft.Y;
+        }
         public bool Intersects(Room other)
         {
             return (TopLeft.X > other.BottomRight.X || BottomRight.X < other.TopLeft.X)
@@ -91,6 +111,27 @@ namespace NotShit.Dungen
                 })
                 .Take(nRooms)
                 .ToList();
+
+            var connections = (from a in _rooms
+                from b in _rooms
+                where a != b && a.IsWestOf(b)
+                select new {a, b}).ToList();
+
+            foreach (var c in connections)
+            {
+                foreach (var p in EastOf(c.a.TopLeft).TakeWhile(p => p.X <= c.b.TopLeft.X))
+                {
+                    this[p].Kind = TileKind.Floor;
+                }
+                foreach (var p in NorthOf(new Point { X = c.b.TopLeft.X, Y = c.a.TopLeft.Y }).TakeWhile(p => p.Y >= c.b.TopLeft.Y))
+                {
+                    this[p].Kind = TileKind.Floor;
+                }
+                foreach (var p in SouthOf(new Point { X = c.b.TopLeft.X, Y = c.a.TopLeft.Y }).TakeWhile(p => p.Y <= c.b.TopLeft.Y))
+                {
+                    this[p].Kind = TileKind.Floor;
+                }
+            }
         }
 
         public int Width { get; private set; }
