@@ -221,6 +221,9 @@ namespace NotShit.Dungen
             foreach (Point position in Positions())
             {
                 grid.Put(this[position].ToChar(), position.X, position.Y, new Color(255, 255, 255));
+                if (this[position].Mob != null) {
+                    this[position].Mob.Draw();
+                }
             }
         }
     }

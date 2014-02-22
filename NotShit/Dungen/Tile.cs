@@ -30,7 +30,7 @@ namespace NotShit.Dungen
             switch (Kind)
             {
                 case TileKind.Wall:
-                    return 'x';
+                    return '#';
                 case TileKind.Floor:
                     return ' ';
             }

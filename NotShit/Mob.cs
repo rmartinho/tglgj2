@@ -94,10 +94,6 @@ namespace NotShit {
                 newY = dy;
             }
 
-            Place(newX, newY);
-        }
-
-        public void Place(int newX, int newY) {
             var oldTile = _level[new Point(X, Y)];
             var newTile = _level[new Point(newX, newY)];
 
@@ -112,7 +108,12 @@ namespace NotShit {
 
             oldTile.Mob = null;
             newTile.Mob = this;
+            
+            X = newX;
+            Y = newY;
+        }
 
+        public void Place(int newX, int newY) {
             X = newX;
             Y = newY;
         }

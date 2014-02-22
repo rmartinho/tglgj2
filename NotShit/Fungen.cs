@@ -43,50 +43,24 @@ namespace NotShit {
             return new Mob(_level, _grid, template, health.Roll(), attack.Roll(), defense.Roll());
         }
 
+        public void PlaceOne() {
+            var position = _level.GetWalkablePoint();
+            var mob = GenerateOne();
+            mob.Place(position.X, position.Y);
+        }
+
         public Player PopulateLevel() {
             var player = new Player(_level, _grid);
-            var room = GenGod.SelectOne(_level.Rooms);
-            var position = room.TopLeft + new Point(1, 1);
+            var position = _level.GetWalkablePoint();
             player.Place(position.X, position.Y);
-
+            
             // generate mobs
             var count = GenGod.GenOne(7, 10);
-            while (count > 0) {
-                var iters = 0;
-                do {
-                    room = GenGod.SelectOne(_level.Rooms);
-                    var startX = room.TopLeft.X + 1;
-                    var startY = room.TopLeft.Y + 1;
-                    var endX = room.BottomRight.X - 1;
-                    var endY = room.BottomRight.Y - 1;
-                    if (startX > endX) {
-                        
-                    }
-                    if (endX > endY) {
-                        
-                    }
-                    position = GenGod.Point(startX, startY, endX, endY);
-                    if (iters++ > 20) {
-                        // bruteforce ahoy (I don't want infinite loops though)
-                        count--;
-                        position.X = position.Y = -1;
-                        break;
-                    }
-                } while (_level[position].Kind == TileKind.Wall || _level[position].Mob != null);
-
-                if (position.X != -1) {
-                    var mob = GenerateOne();
-                    mob.Place(position.X, position.Y);
-                }
+            while (count-- > 0) {
+                PlaceOne();
             }
 
             return player;
-        }
-
-        public void DebugSpawn(Player player) {
-            var mob = GenerateOne();
-            // find a tile that's not a wall
-            //_level[new Point(player.X, player.Y)]
         }
     }
 }

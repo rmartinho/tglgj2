@@ -6,15 +6,14 @@ using NotShit.Dungen;
 namespace NotShit {
     public class Player : Mob {
         private readonly Queue<string> _messages;
-        private int _health;
 
         public override int Health {
-            get { return _health; }
+            get { return base.Health; }
             set {
                 if (value < 0) {
                     AddMessage("You're dead! Congratulations!");
                 }
-                _health = value;
+                base.Health = value;
             }
         }
 
