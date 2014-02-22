@@ -1,8 +1,11 @@
 ﻿using System;
 
+using NotShit.Dungen;
+
 namespace NotShit {
     public class Mob {
         protected readonly GridDisplay _grid;
+        protected readonly Level _level;
 
         public virtual int MaxHealth { get; set; }
         public virtual int Health { get; set; }
@@ -16,8 +19,9 @@ namespace NotShit {
         public int Y { get; private set; }
         public Mob LastAttack { get; set; }
 
-        public Mob(GridDisplay grid, MobTemplate template, int health, int attack, int defense) {
+        public Mob(Level level, GridDisplay grid, MobTemplate template, int health, int attack, int defense) {
             _grid = grid;
+            _level = level;
 
             MaxHealth = Health = health;
             Attack = attack;
@@ -27,8 +31,9 @@ namespace NotShit {
             Tile = template.Tile;
         }
 
-        public Mob(GridDisplay grid, string name, int health, int attack, int defense) {
+        public Mob(Level level, GridDisplay grid, string name, int health, int attack, int defense) {
             _grid = grid;
+            _level = level;
 
             Name = name;
             Color = Color.White;
@@ -89,13 +94,27 @@ namespace NotShit {
                 newY = dy;
             }
 
-            X = newX;
-            Y = newY;
+            Place(newX, newY);
         }
 
-        public void Place(int x, int y) {
-            X = x;
-            Y = y;
+        public void Place(int newX, int newY) {
+            var oldTile = _level[new Point(X, Y)];
+            var newTile = _level[new Point(newX, newY)];
+
+            if (newTile.Kind == TileKind.Wall) {
+                return;
+            }
+
+            if (newTile.Mob != null) {
+                AttackOther(newTile.Mob);
+                return;
+            }
+
+            oldTile.Mob = null;
+            newTile.Mob = this;
+
+            X = newX;
+            Y = newY;
         }
 
         public virtual void Draw() {

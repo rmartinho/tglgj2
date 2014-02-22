@@ -91,6 +91,10 @@ namespace NotShit.Dungen
         public int Width { get; private set; }
         public int Height { get; private set; }
 
+        public List<Room> Rooms {
+            get { return _rooms; }
+        }
+
         public Tile this[Point index]
         {
             get { return _tiles[index.X + index.Y*Width]; }

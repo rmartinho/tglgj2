@@ -28,10 +28,11 @@ namespace NotShit {
             Console.WriteLine("tile width  = {0}", grid.TileWidth);
             Console.WriteLine("tile height = {0}", grid.TileHeight);
 
-            var player = new Player(grid);
-            var fungen = new Fungen(grid);
             var level = new Level(grid.GridWidth, grid.GridHeight, 20, 5, 20);
-            var testMob = fungen.Generate();
+
+            // place mobs
+            var fungen = new Fungen(level, grid);
+            var player = fungen.PopulateLevel();
 
             while (true) {
                 while (!queue.Empty) {
@@ -91,8 +92,8 @@ namespace NotShit {
                                 case 4: // 'd' deals 3 damage
                                     player.DebugDamage(3);
                                     break;
-                                case 1: // 'a' debug fight
-                                    player.AttackOther(testMob);
+                                case 1: // 's' spawn a mob next to the player
+                                    fungen.DebugSpawn(player);
                                     break;
                             }
                         }

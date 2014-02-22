@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using NotShit.Dungen;
 
@@ -31,6 +33,10 @@ namespace NotShit
         public static Point Point(int minX, int minY, int maxX, int maxY)
         {
             return new Point {X = GenOne(minX, maxX), Y = GenOne(minY, maxY)};
+        }
+
+        public static T SelectOne<T>(IList<T> list) {
+            return list[GenOne(0, list.Count)];
         }
     }
 }
